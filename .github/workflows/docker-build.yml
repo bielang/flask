@@ -1,21 +1,22 @@
-name: Docker image buildx and push
-on: [push]
+name: ci
+
+on:
+  push:
+
 jobs:
-  Docker-Build-Push:
+  buildx:
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: docker image build 
-        run: docker build -t bielang163/flask-redis:latest .
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
       -
-        name: list docker image 
-        run: docker image ls
-      - 
-        name: dockerhub login
-        run: docker login -u ${{secrets.DOCKERHUP_USERNAME}} -p ${{secrets.DOCKERHUP_PASSWORD}}
+        name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
       -
-        name: push to dockerhub
-        run: docker image push bielang163/flask-redis:latest
+        name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
